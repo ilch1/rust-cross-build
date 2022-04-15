@@ -20,14 +20,7 @@ jobs:
        with:
          username: ${{ secrets.DOCKER_HUB_USERNAME }}
          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      -
-        name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          file: ./Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          push: true
-          tags: ${{ github.repository }}:$(docker run --rm rust rustc --version | awk '{print $2}')
-          cache-from: type=registry,ref${{ github.repository }}:buildcache
-          cache-to: type=registry,ref=${{ github.repository }}:buildcache,mode=max
+      - name: Docker build
+        run: /usr/bin/docker build . --tag ${{ github.repository }}:1.60.0
+      - name: Docker push
+        run: /usr/bin/docker push ${{ github.repository }}:1.60.0
